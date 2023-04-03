@@ -7,14 +7,14 @@ import java.util.ArrayList;
 public class utils {
     public static ArrayList<Location> readLocations() {
         ArrayList<Location> allLocations = new ArrayList<>();
-        Location loc1 = new Location(51.515192,-0.016542,  1, "Cambridgeshire Street");
-        Location loc2 = new Location(51.543142,-0.135545,  2, "Derbyshire street");
-        Location loc3 = new Location(51.503993, 0.045955, 3, "Liverpool");
-        Location loc4 = new Location(51.545753, -0.477183, 4, "Bristol");
-        allLocations.add(loc1);
-        allLocations.add(loc2);
-        allLocations.add(loc3);
-        allLocations.add(loc4);
+//        Location loc1 = new Location(51.515192,-0.016542,  1, "Cambridgeshire Street");
+//        Location loc2 = new Location(51.543142,-0.135545,  2, "Derbyshire street");
+//        Location loc3 = new Location(51.503993, 0.045955, 3, "Liverpool");
+//        Location loc4 = new Location(51.545753, -0.477183, 4, "Bristol");
+//        allLocations.add(loc1);
+//        allLocations.add(loc2);
+//        allLocations.add(loc3);
+//        allLocations.add(loc4);
         return allLocations;
     }
 

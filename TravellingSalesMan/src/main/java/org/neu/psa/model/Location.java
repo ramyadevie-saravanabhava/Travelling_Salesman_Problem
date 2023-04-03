@@ -3,11 +3,10 @@ package org.neu.psa.model;
 import org.neu.psa.utils.utils;
 
 public class Location {
-    double latitude;
-    double longitude;
-    int id;
-
-    String name;
+    public double latitude;
+    public double longitude;
+    public int id;
+    public String name;
 
     public double getLatitude() {
         return latitude;
@@ -32,7 +31,7 @@ public class Location {
         name = "";
     }
 
-    public Location(double latitude, double longitude, int id, String name) {
+    public Location( int id, String name, double latitude, double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.id = id;

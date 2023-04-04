@@ -37,7 +37,12 @@ public class Location {
         this.id = id;
         this.name = name;
     }
-
+//    public Location( double longitude, double latitude, int id, String name) {
+//        this.latitude = latitude;
+//        this.longitude = longitude;
+//        this.id = id;
+//        this.name = name;
+//    }
     public double distanceTo(Location to){
 
         if(this == to){

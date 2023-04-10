@@ -2,6 +2,8 @@ package org.neu.psa.model;
 
 import org.neu.psa.utils.utils;
 
+import java.util.Iterator;
+
 public class Location {
     public double latitude;
     public double longitude;
@@ -37,12 +39,16 @@ public class Location {
         this.id = id;
         this.name = name;
     }
-//    public Location( double longitude, double latitude, int id, String name) {
-//        this.latitude = latitude;
-//        this.longitude = longitude;
-//        this.id = id;
-//        this.name = name;
-//    }
+
+    public static Location findLocationById(int id, Location[] allLocations) {
+        for (Location location : allLocations) {
+            if (location.getId() == id) {
+                return location;
+            }
+        }
+        return null;
+    }
+
     public double distanceTo(Location to){
 
         if(this == to){

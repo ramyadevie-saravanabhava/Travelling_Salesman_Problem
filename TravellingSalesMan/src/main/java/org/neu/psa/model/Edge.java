@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package org.neu.psa.christofides;
+package org.neu.psa.model;
 
 /**
  *
@@ -10,8 +10,13 @@ package org.neu.psa.christofides;
  */
 public class Edge {
     
-    int u;
-    int v;
-    int distance;
-    
+    Location src;
+    Location dest;
+    double distance;
+
+    public Edge(Location src, Location dist) {
+        this.src = src;
+        this.dest = dist;
+        this.distance = src.distanceTo(dist);
+    }
 }

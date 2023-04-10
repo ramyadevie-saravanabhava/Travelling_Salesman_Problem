@@ -10,12 +10,15 @@ package org.neu.psa.christofides;
  */
 import java.io.*;
 import java.util.*;
+
+import org.neu.psa.algorithms.gentic.optimizations.TwoOpt;
+import org.neu.psa.model.Edge;
 import org.neu.psa.model.Location;
+import org.neu.psa.utils.utils;
 
 
 public class TSP {
-
-    public static Location [] Locations;
+    public static Location[] locations;
     public static List<Edge> edge;
     static class Point {
         double x, y;
@@ -32,137 +35,122 @@ public class TSP {
 
     public static void main(String[] args) {
         List<Point> points = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\varun\\OneDrive\\Desktop\\PSA PROJECT\\INFO-6205-Spring-2023\\TravellingSalesMan\\crimeSample.csv"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(utils.getDataFilePath()))) {
             String line;
-             List<String> lines = new ArrayList<>();
-//            while ((line = br.readLine()) != null) {
-//                String[] values = line.split(",");
-//                double latitude = Double.parseDouble(values[1]);
-//                double longitude = Double.parseDouble(values[2]);
-//                points.add(new Point(longitude, latitude));
-//            }
+            List<String> lines = new ArrayList<>();
 
             while ((line = br.readLine()) != null) {
                 lines.add(line);
             }
             
-            Locations = new Location[lines.size()];
-            for(int i=0; i<Locations.length; i++){
+            locations = new Location[lines.size()];
+            for(int i = 0; i< locations.length; i++){
                 String[]parts = lines.get(i).split(",");
-                Locations[i] = new Location (i+1, parts[0].substring(parts[0].length() - 5),Double.parseDouble(parts[1]), Double.parseDouble(parts[2]) );
+                locations[i] = new Location (i, parts[0].substring(parts[0].length() - 5),Double.parseDouble(parts[1]), Double.parseDouble(parts[2]) );
             }
         } catch (IOException e) {
             e.printStackTrace();
             return;
         }
-        int n = Locations.length;
-        double[][] graph = new double[n][n];
+
+        int n = locations.length;
+        double[][] distanceMatrix = new double[n][n];
         for (int i = 0; i < n-1; i++) {
             for (int j = i + 1; j < n; j++) {
-                double distance = Locations[i].distanceTo(Locations[j]);
-                graph[i][j] = distance;
-                graph[j][i] = distance;
+                double distance = locations[i].distanceTo(locations[j]);
+                distanceMatrix[i][j] = distance;
+                distanceMatrix[j][i] = distance;
             }
         }
 
-        List<int[]> mst = prim(graph, 0);
-    
-//        for (int[] edge : mst) {
-//            System.out.println(Arrays.toString(edge));
-//        }
-//        List<Integer> oddVertices = new ArrayList<>();
+        List<int[]> mst = prim(distanceMatrix, 0);
         List<Integer> oddVertices = findOddVertexes(mst);
-        
-        minimumWeightMatching(mst, graph, oddVertices);
-        
-//        List<Integer> eularian = findEulerianTour(mst, graph);
-//        System.out.println("Eularian path: " + eularian);
-        
-        List<Integer> eulerian_tour = findEulerianTour(mst, graph);
-System.out.println("Eulerian tour: " + eulerian_tour);
+        minimumWeightMatching(mst, distanceMatrix, oddVertices);
 
-int current = eulerian_tour.get(0);
-List<Integer> path = new ArrayList<>();
-path.add(current);
-boolean[] visited = new boolean[eulerian_tour.size()];
-visited[eulerian_tour.get(0)] = true;
-double length = 0;
+        List<Integer> eulerianTour = findEulerianTour(mst, distanceMatrix);
+//        System.out.println("Eulerian tour: " + eulerianTour);
 
-for (int v : eulerian_tour) {
-    if (!visited[v]) {
-        path.add(v);
-        visited[v] = true;
-        length += graph[current][v];
-        current = v;
+        int current = eulerianTour.get(0);
+        List<Integer> path = new ArrayList<>();
+        path.add(current);
+        boolean[] visited = new boolean[eulerianTour.size()];
+        visited[eulerianTour.get(0)] = true;
+        double length = 0;
+
+        for (int v : eulerianTour) {
+            if (!visited[v]) {
+                path.add(v);
+                visited[v] = true;
+                length += distanceMatrix[current][v];
+                current = v;
+            }
+        }
+
+        length += distanceMatrix[current][eulerianTour.get(0)];
+        path.add(eulerianTour.get(0));
+
+        System.out.println("----------------- 2OPT Start --------------------");
+        int[] pathArr = path.stream().mapToInt(Integer::intValue).toArray();
+
+        int[] twoOptArr = TwoOpt.tsp2opt(pathArr, distanceMatrix);
+
+        List<Integer> twoOptList = new ArrayList<>();
+
+        for (int i : twoOptArr) {
+            twoOptList.add(i);
+        }
+        System.out.println("Two OPT DISTANCE : " + utils.findTotalDistance(twoOptList, locations));
+        System.out.println("-------------------------------------");
+        System.out.println("Result path: " + path);
+        System.out.println("Result length of the path: " + length);
     }
-}
 
-length += graph[current][eulerian_tour.get(0)];
-path.add(eulerian_tour.get(0));
+    public static List<int[]> prim(double[][] graph, int startNode) {
+        int length = graph.length;
+        int[] parent = new int[length];
+        int[] key = new int[length];
+        List<int[]> mst = new ArrayList<>();
+        Boolean mstSet[] = new Boolean[length];
 
-System.out.println("Result path: " + path);
-System.out.println("Result length of the path: " + length);
-
-    }
-
-       public static List<int[]> prim(double[][] graph, int startNode) {
-        int v = graph.length;
-        int[] parent = new int[v];
-        
-        int[] key = new int[v];
-        
-        Boolean mstSet[] = new Boolean[v];
-        
-        for(int i = 0; i < v; i++){
+        for(int i = 0; i < length; i++){
             key[i] = Integer.MAX_VALUE;
             mstSet[i] = false;
         }
-        
+
         key[startNode] = 0;
         parent[startNode] = -1;
-        
-        for(int count = 0; count < v -1; count++){
+
+        for(int count = 0; count < length-1; count++){
             int u = minKey(key, mstSet);
-            
             mstSet[u] = true;
-            
-            for(int n = 0; n < v; n++){
-                
+
+            for(int n = 0; n < length; n++){
                 if(graph[u][n]!=0 && mstSet[n]== false && graph[u][n] < key[n] ){
                     parent[n] = u;
                     key[n] = (int) graph[u][n];
                 }
             }
-                
-                
         }
-        
-        List<int[]> mst = new ArrayList<>();
-        
-        for(int f = 1; f< v; f++){
-            
-            int[] m = {parent[f], f};
-            
+
+        for(int f = 1; f < length; f++){
+            int[] m = { parent[f], f };
             mst.add(m);
         }
+
         return mst;
     }
-       
-     static int minKey(int key[], Boolean mstSet[])
-    {
+
+    static int minKey(int key[], Boolean mstSet[]) {
         // Initialize min value
         int min = Integer.MAX_VALUE, min_index = -1;
  
-        for (int v = 0; v < Locations.length; v++)
+        for (int v = 0; v < locations.length; v++)
             if (mstSet[v] == false && key[v] < min) {
                 min = key[v];
                 min_index = v;
             }
- 
         return min_index;
     }
-    
-
 
     static List<int[]> minWeightMatching(double[][] graph, List<Integer> vertices) {
         int n = vertices.size();
@@ -377,5 +365,4 @@ System.out.println("Result length of the path: " + length);
         }
         return matchedMST;
     }
-  
 }

@@ -35,8 +35,8 @@ public class TwoOpt {
         for(int maxCount = cs.length*25; maxCount > 0 ; maxCount--)
         {
             bestCost = totalCost(bestTour,table);
-            for(int i = 0; i < cs.length-1; i++){
-                for(int k = i+1; k <cs.length;k++){
+            for(int i = 1; i < cs.length-1; i++){
+                for(int k = i+1; k <cs.length - 1;k++){
                     int[] newTour = optSwap(bestTour,i,k);
 
                     if(bestCost > totalCost(newTour,table))

@@ -8,8 +8,10 @@ package org.neu.psa.christofides;
  *
  * @author varun
  */
+import java.awt.Graphics;
 import java.io.*;
 import java.util.*;
+import or.neu.psa.aco.AntColonyOptimization;
 
 import org.neu.psa.algorithms.gentic.optimizations.TwoOpt;
 import org.neu.psa.model.Edge;
@@ -89,7 +91,6 @@ public class TSP {
         length += distanceMatrix[current][eulerianTour.get(0)];
         path.add(eulerianTour.get(0));
 
-        System.out.println("----------------- 2OPT Start --------------------");
         int[] pathArr = path.stream().mapToInt(Integer::intValue).toArray();
 
         int[] twoOptArr = TwoOpt.tsp2opt(pathArr, distanceMatrix);
@@ -99,12 +100,24 @@ public class TSP {
         for (int i : twoOptArr) {
             twoOptList.add(i);
         }
-        System.out.println("Two OPT DISTANCE : " + utils.findTotalDistance(twoOptList, locations));
-        System.out.println("-------------------------------------");
-        System.out.println("Result path: " + path);
-        System.out.println("Result length of the path: " + length);
-    }
 
+        System.out.println("Christofides Result path: " + path);
+        System.out.println(" Christofides Result length of the path: " + length);
+        System.out.println("-------------------------------------");
+        System.out.println("Two OPT Route : " + twoOptList);
+        System.out.println("Two OPT DISTANCE : " + utils.findTotalDistance(twoOptList, locations));
+      System.out.println("-------------------------------------");
+        
+    AntColonyOptimization aco = new AntColonyOptimization(locations.length, 1000, 1, 5, 0.1, 1, distanceMatrix,twoOptArr );
+    int[] tour = aco.solve();
+    System.out.println("Ant Colony Optimized Tour: " + Arrays.toString(tour));
+    System.out.println("Ant Colony Optimized Tour Length: " + aco.calculateTourLength(tour));
+        
+    }
+        
+
+    
+    
     public static List<int[]> prim(double[][] graph, int startNode) {
         int length = graph.length;
         int[] parent = new int[length];

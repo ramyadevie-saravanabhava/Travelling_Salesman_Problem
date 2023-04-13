@@ -29,7 +29,7 @@ public class GeneticTSP{
                     adjacencyMatrix[i][j] = Locations[i-1].distanceTo(Locations[j-1]);
                 }
             }
-        int runs = 12;
+        int runs = 1;
         Path [] bests = new Path[runs];
         for(int i = 0; i<runs; i++){
             Population population = new Population(adjacencyMatrix, Locations, 0.05, 2000);

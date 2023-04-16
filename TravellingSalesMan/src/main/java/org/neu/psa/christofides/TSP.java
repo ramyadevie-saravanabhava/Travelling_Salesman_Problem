@@ -12,6 +12,7 @@ import java.awt.Graphics;
 import java.io.*;
 import java.util.*;
 import or.neu.psa.aco.AntColonyOptimization;
+import org.neu.psa.SA.SimulatedAnnealing;
 
 import org.neu.psa.algorithms.gentic.optimizations.ThreeOpt;
 import org.neu.psa.algorithms.gentic.optimizations.TwoOpt;
@@ -68,8 +69,25 @@ public class TSP {
 
         List<int[]> mst = prim(distanceMatrix, 0);
         List<Integer> oddVertices = findOddVertexes(mst);
+        
+        int[] msttour = new int[locations.length];
+        
+
+        
+
         minimumWeightMatching(mst, distanceMatrix, oddVertices);
 
+                for(int i = 0; i < locations.length; i++){
+            
+            msttour[i] = mst.get(i)[0];
+            if(i == mst.size()-1){
+                msttour[i+1] = mst.get(i)[1];
+            }
+            
+        }
+                        System.out.println("MST " + Arrays.toString(msttour));
+                        System.out.println("MST length " + msttour.length);
+        
         List<Integer> eulerianTour = findEulerianTour(mst, distanceMatrix);
 //        System.out.println("Eulerian tour: " + eulerianTour);
 
@@ -119,6 +137,12 @@ public class TSP {
     int[] tour = aco.solve();
     System.out.println("Ant Colony Optimized Tour: " + Arrays.toString(tour));
     System.out.println("Ant Colony Optimized Tour Length: " + aco.calculateTourLength(tour));
+    
+    
+    SimulatedAnnealing sa = new SimulatedAnnealing(locations.length, distanceMatrix, 100, 0.95, tour);
+    
+    System.out.println("Simulated Annealing Tour: " + Arrays.toString(sa.optimizeTour()));
+    System.out.println("Simulated Annealing Tour Length: " + sa.calculateTourLength(tour));
         
     }
         
@@ -153,7 +177,7 @@ public class TSP {
         }
 
         for(int f = 1; f < length; f++){
-            int[] m = { parent[f], f };
+            int[] m = { parent[f], f  };
             mst.add(m);
         }
 

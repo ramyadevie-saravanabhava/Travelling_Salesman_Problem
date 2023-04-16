@@ -13,6 +13,7 @@ import java.io.*;
 import java.util.*;
 import or.neu.psa.aco.AntColonyOptimization;
 
+import org.neu.psa.algorithms.gentic.optimizations.ThreeOpt;
 import org.neu.psa.algorithms.gentic.optimizations.TwoOpt;
 import org.neu.psa.model.Edge;
 import org.neu.psa.model.Location;
@@ -94,9 +95,12 @@ public class TSP {
         int[] pathArr = path.stream().mapToInt(Integer::intValue).toArray();
 
         int[] twoOptArr = TwoOpt.tsp2opt(pathArr, distanceMatrix);
-
+        int[] threeOptArr = ThreeOpt.threeOpt(pathArr, distanceMatrix);
+        List<Integer> threeOptList = new ArrayList<>();
         List<Integer> twoOptList = new ArrayList<>();
-
+        for (int i : threeOptArr) {
+            threeOptList.add(i);
+        }
         for (int i : twoOptArr) {
             twoOptList.add(i);
         }
@@ -106,6 +110,9 @@ public class TSP {
         System.out.println("-------------------------------------");
         System.out.println("Two OPT Route : " + twoOptList);
         System.out.println("Two OPT DISTANCE : " + utils.findTotalDistance(twoOptList, locations));
+        System.out.println("-------------------------------------");
+        System.out.println("Three OPT Route : " + threeOptList);
+        System.out.println("Three OPT DISTANCE : " + utils.findTotalDistance(threeOptList, locations));
       System.out.println("-------------------------------------");
         
     AntColonyOptimization aco = new AntColonyOptimization(locations.length, 1000, 1, 5, 0.1, 1, distanceMatrix,twoOptArr );

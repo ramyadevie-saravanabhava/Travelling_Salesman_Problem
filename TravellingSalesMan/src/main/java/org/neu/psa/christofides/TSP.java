@@ -8,10 +8,9 @@ package org.neu.psa.christofides;
  *
  * @author varun
  */
-import java.awt.Graphics;
 import java.io.*;
 import java.util.*;
-import or.neu.psa.aco.AntColonyOptimization;
+import org.neu.psa.algorithms.gentic.optimizations.AntColonyOptimization;
 import org.neu.psa.SA.SimulatedAnnealing;
 
 import org.neu.psa.algorithms.gentic.optimizations.ThreeOpt;

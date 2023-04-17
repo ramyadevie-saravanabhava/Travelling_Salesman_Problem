@@ -20,7 +20,6 @@ import org.neu.psa.model.Edge;
 import org.neu.psa.model.Location;
 import org.neu.psa.utils.utils;
 
-
 public class TSP {
     public static Location[] locations;
     public static List<Edge> edge;
@@ -71,25 +70,18 @@ public class TSP {
         List<Integer> oddVertices = findOddVertexes(mst);
         
         int[] msttour = new int[locations.length];
-        
-
-        
 
         minimumWeightMatching(mst, distanceMatrix, oddVertices);
-
-                for(int i = 0; i < locations.length; i++){
-            
+        for(int i = 0; i < locations.length; i++){
             msttour[i] = mst.get(i)[0];
             if(i == mst.size()-1){
                 msttour[i+1] = mst.get(i)[1];
             }
-            
         }
-                        System.out.println("MST " + Arrays.toString(msttour));
-                        System.out.println("MST length " + msttour.length);
+        System.out.println("MST " + Arrays.toString(msttour));
+        System.out.println("MST length " + msttour.length);
         
         List<Integer> eulerianTour = findEulerianTour(mst, distanceMatrix);
-//        System.out.println("Eulerian tour: " + eulerianTour);
 
         int current = eulerianTour.get(0);
         List<Integer> path = new ArrayList<>();
@@ -143,8 +135,7 @@ public class TSP {
     
     System.out.println("Simulated Annealing Tour: " + Arrays.toString(sa.optimizeTour()));
     System.out.println("Simulated Annealing Tour Length: " + sa.calculateTourLength(tour));
-        
-    }
+}
         
 
     

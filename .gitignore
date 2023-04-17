@@ -3,6 +3,8 @@
 .idea/**
 *.class
 **/.DS_Store
+TravellingSalesMan.iml
+**/*.iml
 
 # Log file
 *.log

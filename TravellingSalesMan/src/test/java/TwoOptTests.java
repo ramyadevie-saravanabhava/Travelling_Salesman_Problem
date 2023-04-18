@@ -1,13 +1,9 @@
-import java.util.Arrays;
 import org.junit.Test;
-import org.junit.Assert;
 import org.neu.psa.algorithms.gentic.optimizations.TwoOpt;
-import org.neu.psa.model.Location;
-import org.neu.psa.utils.utils;
 
 import static org.junit.Assert.*;
 
-public class TwoOpt_testcases {
+public class TwoOptTests {
 
     @Test
     public void testTsp2opt() {

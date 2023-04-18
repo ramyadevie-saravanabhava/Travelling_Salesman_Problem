@@ -12,7 +12,7 @@ public class GeneticTSP{
 
     public static void main(String[] args) throws IOException {
         double start = System.currentTimeMillis();
-        BufferedReader reader = new BufferedReader(new FileReader("./crimeSample.csv"));
+        BufferedReader reader = new BufferedReader(new FileReader("./finalCrimeData.csv"));
         List<String> lines = new ArrayList<>();
         String line;
             while ((line = reader.readLine()) != null) {

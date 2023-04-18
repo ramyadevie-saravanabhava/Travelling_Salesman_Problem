@@ -15,36 +15,21 @@ import org.neu.psa.SA.SimulatedAnnealing;
 
 import org.neu.psa.algorithms.gentic.optimizations.ThreeOpt;
 import org.neu.psa.algorithms.gentic.optimizations.TwoOpt;
-import org.neu.psa.model.Edge;
 import org.neu.psa.model.Location;
 import org.neu.psa.utils.utils;
 
 public class TSP {
     public static Location[] locations;
-    public static List<Edge> edge;
-    static class Point {
-        double x, y;
-        public Point(double x, double y) {
-            this.x = x;
-            this.y = y;
-        }
-        public double distanceTo(Point other) {
-            double dx = x - other.x;
-            double dy = y - other.y;
-            return Math.sqrt(dx * dx + dy * dy);
-        }
-    }
 
-    public static void main(String[] args) {
-        List<Point> points = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(utils.getDataFilePath()))) {
+    public static Location[] readLocations(String filePath){
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
             List<String> lines = new ArrayList<>();
 
             while ((line = br.readLine()) != null) {
                 lines.add(line);
             }
-            
+
             locations = new Location[lines.size()];
             for(int i = 0; i< locations.length; i++){
                 String[]parts = lines.get(i).split(",");
@@ -52,11 +37,15 @@ public class TSP {
             }
         } catch (IOException e) {
             e.printStackTrace();
-            return;
         }
 
+        return  locations;
+    }
+
+    public static double[][] calculateDistanceMatrix(Location[] locations) {
         int n = locations.length;
         double[][] distanceMatrix = new double[n][n];
+
         for (int i = 0; i < n-1; i++) {
             for (int j = i + 1; j < n; j++) {
                 double distance = locations[i].distanceTo(locations[j]);
@@ -64,6 +53,13 @@ public class TSP {
                 distanceMatrix[j][i] = distance;
             }
         }
+
+        return distanceMatrix;
+    }
+
+    public static void main(String[] args) {
+        locations = readLocations(utils.getDataFilePath());
+        double[][] distanceMatrix = calculateDistanceMatrix(locations);
 
         List<int[]> mst = prim(distanceMatrix, 0);
         List<Integer> oddVertices = findOddVertexes(mst);
@@ -77,13 +73,11 @@ public class TSP {
                 msttour[i+1] = mst.get(i)[1];
             }
         }
-        System.out.println("MST " + Arrays.toString(msttour));
-        System.out.println("MST length " + msttour.length);
         
         List<Integer> eulerianTour = findEulerianTour(mst, distanceMatrix);
-
         int current = eulerianTour.get(0);
         List<Integer> path = new ArrayList<>();
+        List<String> pathHash = new ArrayList<>();
         path.add(current);
         boolean[] visited = new boolean[eulerianTour.size()];
         visited[eulerianTour.get(0)] = true;
@@ -92,6 +86,7 @@ public class TSP {
         for (int v : eulerianTour) {
             if (!visited[v]) {
                 path.add(v);
+                pathHash.add(Location.findLocationById(v, locations).name);
                 visited[v] = true;
                 length += distanceMatrix[current][v];
                 current = v;
@@ -102,43 +97,45 @@ public class TSP {
         path.add(eulerianTour.get(0));
 
         int[] pathArr = path.stream().mapToInt(Integer::intValue).toArray();
-
         int[] twoOptArr = TwoOpt.tsp2opt(pathArr, distanceMatrix);
         int[] threeOptArr = ThreeOpt.threeOpt(pathArr, distanceMatrix);
         List<Integer> threeOptList = new ArrayList<>();
+        List<String> threeOptNameHash = new ArrayList<>();
         List<Integer> twoOptList = new ArrayList<>();
-        for (int i : threeOptArr) {
-            threeOptList.add(i);
-        }
+        List<String> twoOptNameHash = new ArrayList<>();
+
         for (int i : twoOptArr) {
             twoOptList.add(i);
+            twoOptNameHash.add(Location.findLocationById(i, locations).name);
+        }
+
+        for (int i : threeOptArr) {
+            threeOptList.add(i);
+            threeOptNameHash.add(Location.findLocationById(i, locations).name);
         }
 
         System.out.println("Christofides Result path: " + path);
-        System.out.println(" Christofides Result length of the path: " + length);
+        System.out.println("Christofides Result Hash: " + pathHash);
+        System.out.println(" Christofides Result length of the path: " + length + " meters");
         System.out.println("-------------------------------------");
         System.out.println("Two OPT Route : " + twoOptList);
-        System.out.println("Two OPT DISTANCE : " + utils.findTotalDistance(twoOptList, locations));
+        System.out.println("Two OPT Route Hash : " + twoOptNameHash);
+        System.out.println("Two OPT DISTANCE : " + utils.findTotalDistance(twoOptList, locations) + " meters");
         System.out.println("-------------------------------------");
         System.out.println("Three OPT Route : " + threeOptList);
-        System.out.println("Three OPT DISTANCE : " + utils.findTotalDistance(threeOptList, locations));
-      System.out.println("-------------------------------------");
-        
-    AntColonyOptimization aco = new AntColonyOptimization(locations.length, 1000, 1, 5, 0.1, 1, distanceMatrix,twoOptArr );
-    int[] tour = aco.solve();
-    System.out.println("Ant Colony Optimized Tour: " + Arrays.toString(tour));
-    System.out.println("Ant Colony Optimized Tour Length: " + aco.calculateTourLength(tour));
-    
-    
-    SimulatedAnnealing sa = new SimulatedAnnealing(locations.length, distanceMatrix, 100, 0.95, tour);
-    
-    System.out.println("Simulated Annealing Tour: " + Arrays.toString(sa.optimizeTour()));
-    System.out.println("Simulated Annealing Tour Length: " + sa.calculateTourLength(tour));
-}
-        
+        System.out.println("Two OPT Route Hash : " + threeOptNameHash);
+        System.out.println("Three OPT DISTANCE : " + utils.findTotalDistance(threeOptList, locations) + " meters");
+        System.out.println("-------------------------------------");
+        AntColonyOptimization aco = new AntColonyOptimization(locations.length, 1000, 1, 5, 0.1, 1, distanceMatrix,twoOptArr );
+        int[] tour = aco.solve();
+        System.out.println("Ant Colony Optimized Tour: " + Arrays.toString(tour));
+        System.out.println("Ant Colony Optimized Tour Length: " + aco.calculateTourLength(tour)+ " meters");
+        System.out.println("-------------------------------------");
+        SimulatedAnnealing sa = new SimulatedAnnealing(locations.length, distanceMatrix, 100, 0.95, tour);
+        System.out.println("Simulated Annealing Tour: " + Arrays.toString(sa.optimizeTour()));
+        System.out.println("Simulated Annealing Tour Length: " + sa.calculateTourLength(tour) + " meters");
+    }
 
-    
-    
     public static List<int[]> prim(double[][] graph, int startNode) {
         int length = graph.length;
         int[] parent = new int[length];
@@ -174,7 +171,7 @@ public class TSP {
         return mst;
     }
 
-    static int minKey(int key[], Boolean mstSet[]) {
+    public static int minKey(int key[], Boolean mstSet[]) {
         // Initialize min value
         int min = Integer.MAX_VALUE, min_index = -1;
  

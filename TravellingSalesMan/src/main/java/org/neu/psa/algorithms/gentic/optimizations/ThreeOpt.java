@@ -7,8 +7,8 @@ public class ThreeOpt {
         while (improve) {
             improve = false;
             for (int i = 0; i < n - 2; i++) {
-                for (int j = i + 2; j < n; j++) {
-                    for (int k = j + 1; k < n; k++) {
+                for (int j = i + 2; j < n-1; j++) {
+                    for (int k = j + 2; k < n; k++) {
                         int[] newTour = reverse(tour, i+1, j);
                         newTour = reverse(newTour, j+1, k);
                         newTour = reverse(newTour, k+1, n-1);

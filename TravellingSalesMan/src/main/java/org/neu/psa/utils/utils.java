@@ -9,7 +9,7 @@ import java.util.List;
 public class utils {
 
     public static String getDataFilePath() {
-        return "./finalCrimeData.csv";
+        return "./crimeSample.csv";
     }
 
     public static ArrayList<Location> readLocations() {

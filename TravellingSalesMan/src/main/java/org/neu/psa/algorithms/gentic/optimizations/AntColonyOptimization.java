@@ -76,6 +76,7 @@ public class AntColonyOptimization {
         return bestTour;
     }
 
+
     private int[] constructTour() {
         int startNode = cTour[0];
         int[] tour = new int[numNodes];
@@ -94,7 +95,7 @@ public class AntColonyOptimization {
         int currentNode = tour[tour.length - 1];
         double[] probabilities = new double[numNodes];
         double totalProbability = 0.0;
-        for (int i = 0; i < numNodes; i++) {
+        for (int i = 0; i < numNodes; i++){
             if (!visited[i]) {
                 probabilities[i] = Math.pow(pheromoneMatrix[currentNode][i], alpha) *
                         Math.pow(1.0 / distanceMatrix[currentNode][i], beta);
@@ -136,6 +137,9 @@ private void updatePheromoneMatrix(int[] tour, double tourLength) {
         pheromoneMatrix[toNode][fromNode] = (1.0 - rho) * pheromoneMatrix[toNode][fromNode] + rho * pheromoneDeposit;
     }
 }
+
+
+
         }
 
 

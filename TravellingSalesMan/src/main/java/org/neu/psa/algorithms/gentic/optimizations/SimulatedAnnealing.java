@@ -48,10 +48,12 @@ public class SimulatedAnnealing {
             while (node2 == node1) {
                 node2 = rand.nextInt(numNodes);
             }
-            int[] newTour = Arrays.copyOf(currentTour, currentTour.length);
-            int temp = newTour[node1];
-            newTour[node1] = newTour[node2];
-            newTour[node2] = temp;
+//            int[] newTour = Arrays.copyOf(currentTour, currentTour.length);
+//            
+//            int temp = newTour[node1];
+//            newTour[node1] = newTour[node2];
+//            newTour[node2] = temp;
+              int[] newTour = TwoOpt.tsp2opt(currentTour, distanceMatrix);
             double newTourLength = calculateTourLength(newTour);
 
             // accept new solution with a probability based on temperature and energy difference

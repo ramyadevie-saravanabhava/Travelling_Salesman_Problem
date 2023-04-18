@@ -85,6 +85,7 @@ System.out.println("MST Distance: " + sum);
 
         
         List<Integer> eulerianTour = findEulerianTour(mstList, distanceMatrix);
+        List<Integer> hamiltonTour = hamiltonianCircuit(eulerianTour);
 //        System.out.println("Eulerian tour: " + eulerianTour);
 
 
@@ -107,8 +108,10 @@ System.out.println("MST Distance: " + sum);
                 current = v;
             }
         }
-
+        
+        
         length += distanceMatrix[current][eulerianTour.get(0)];
+    
         path.add(eulerianTour.get(0));
 
         int[] pathArr = path.stream().mapToInt(Integer::intValue).toArray();
@@ -129,7 +132,7 @@ System.out.println("MST Distance: " + sum);
             threeOptNameHash.add(Location.findLocationById(i, locations).name);
         }
 
-        System.out.println("Christofides Result path: " + path );
+        System.out.println("Christofides Result Eulerian path: " + path );
         System.out.println("Christofides Result Hash: " + pathHash);
         System.out.println(" Christofides Result length of the path: " + length + " meters");
         System.out.println("-------------------------------------");
@@ -141,16 +144,31 @@ System.out.println("MST Distance: " + sum);
         System.out.println("Three OPT DISTANCE : " + utils.findTotalDistance(threeOptList, locations));
       System.out.println("-------------------------------------");
         
-    AntColonyOptimization aco = new AntColonyOptimization(locations.length, 1000, 1, 5, 0.1, 1, distanceMatrix,twoOptArr );
+      
+    List<Integer> acoList = new ArrayList<>();
+      
+    AntColonyOptimization aco = new AntColonyOptimization(locations.length, 1000, 1, 5, 0.5, 500, distanceMatrix,threeOptArr );
     int[] tour = aco.solve();
+    
+    for (int i : tour) {
+            acoList.add(i);
+        }
     System.out.println("Ant Colony Optimized Tour: " + Arrays.toString(tour));
-    System.out.println("Ant Colony Optimized Tour Length: " + aco.calculateTourLength(tour));
+    System.out.println("Ant Colony Optimized Tour Length: " + utils.findTotalDistance(acoList, locations));
     
     
-    SimulatedAnnealing sa = new SimulatedAnnealing(locations.length, distanceMatrix, 100, 0.95, tour);
+    List<Integer> saList = new ArrayList<>();
+      
+    SimulatedAnnealing sa = new SimulatedAnnealing(locations.length, distanceMatrix, 10000, 0.05, threeOptArr);
+    int[] saTour = sa.optimizeTour();
     
-    System.out.println("Simulated Annealing Tour: " + Arrays.toString(sa.optimizeTour()));
-    System.out.println("Simulated Annealing Tour Length: " + sa.calculateTourLength(tour));
+    for (int i : saTour) {
+            saList.add(i);
+        }
+    
+
+    System.out.println("Simulated Annealing Tour: " + Arrays.toString(saTour));
+    System.out.println("Simulated Annealing Tour Length: " + utils.findTotalDistance(saList, locations));
 //        
     }
 //        

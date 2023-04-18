@@ -11,7 +11,7 @@ package org.neu.psa.christofides;
 import java.io.*;
 import java.util.*;
 import org.neu.psa.algorithms.gentic.optimizations.AntColonyOptimization;
-import org.neu.psa.SA.SimulatedAnnealing;
+import org.neu.psa.algorithms.gentic.optimizations.SimulatedAnnealing;
 
 import org.neu.psa.algorithms.gentic.optimizations.ThreeOpt;
 import org.neu.psa.algorithms.gentic.optimizations.TwoOpt;

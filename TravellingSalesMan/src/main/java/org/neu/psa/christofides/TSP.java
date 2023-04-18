@@ -33,7 +33,7 @@ public class TSP {
             locations = new Location[lines.size()];
             for(int i = 0; i< locations.length; i++){
                 String[]parts = lines.get(i).split(",");
-                locations[i] = new Location (i, parts[0].substring(parts[0].length() - 5),Double.parseDouble(parts[1]), Double.parseDouble(parts[2]) );
+                locations[i] = new Location (i, parts[0].substring(parts[0].length() - 5),Double.parseDouble(parts[2]), Double.parseDouble(parts[1]) );
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -62,19 +62,11 @@ public class TSP {
         locations = readLocations(utils.getDataFilePath());
         double[][] distanceMatrix = calculateDistanceMatrix(locations);
 
-//        List<int[]> mst = prim(distanceMatrix, 0);
-//        List<Integer> oddVertices = findOddVertexes(mst);
-//        
-//        int[] msttour = new int[locations.length];
-//
-//        minimumWeightMatching(mst, distanceMatrix, oddVertices);
-        
-//        int startNode = 0;
-
 
 Edge[] mst = GetMST(distanceMatrix);
 double sum = 0.0;
 List<int[]> mstList = new ArrayList<>();
+System.out.println("Vertices: " + mst.length);
 for (Edge e : mst) {
 //    System.out.println(e.either() + "-" + e.other(e.either()) + " " + e.weight);
     sum += e.weight;   
@@ -93,7 +85,9 @@ System.out.println("MST Distance: " + sum);
 
         
         List<Integer> eulerianTour = findEulerianTour(mstList, distanceMatrix);
-        System.out.println("Eulerian tour: " + eulerianTour);
+//        System.out.println("Eulerian tour: " + eulerianTour);
+
+
         
 
         int current = eulerianTour.get(0);
@@ -135,7 +129,7 @@ System.out.println("MST Distance: " + sum);
             threeOptNameHash.add(Location.findLocationById(i, locations).name);
         }
 
-        System.out.println("Christofides Result path: " + path);
+        System.out.println("Christofides Result path: " + path );
         System.out.println("Christofides Result Hash: " + pathHash);
         System.out.println(" Christofides Result length of the path: " + length + " meters");
         System.out.println("-------------------------------------");
@@ -500,4 +494,5 @@ System.out.println("MST Distance: " + sum);
         edges.toArray(mstArray);
         return mstArray;
     }
+ 
 }

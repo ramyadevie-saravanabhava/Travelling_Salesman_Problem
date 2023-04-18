@@ -8,8 +8,7 @@ package org.neu.psa.christofides;
  *
  * @author varun
  */
-public class EdgeWeightedGraph
-{
+public class EdgeWeightedGraph {
 final int V;
 private final Bag<Edge>[] adj;
 public EdgeWeightedGraph(int V)
@@ -27,4 +26,6 @@ adj[w].add(e);
 }
 public Iterable<Edge> adj(int v)
 { return adj[v]; }
+
+
 }

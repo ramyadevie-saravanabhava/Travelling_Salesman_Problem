@@ -42,7 +42,7 @@ public class utils {
     double dist = Math.sin(Math.toRadians(startLat)) * Math.sin(Math.toRadians(destLat)) + Math.cos(Math.toRadians(startLat)) * Math.cos(Math.toRadians(destLat)) * Math.cos(Math.toRadians(theta));
     dist = Math.acos(dist);
     dist = Math.toDegrees(dist);
-    dist = dist * 60 * 1.1515 * 1.609344; // Convert from miles to meters
+    dist = dist * 60 * 1.1515 * 1.60934; // Convert from miles to meters
     return dist;
 }
     

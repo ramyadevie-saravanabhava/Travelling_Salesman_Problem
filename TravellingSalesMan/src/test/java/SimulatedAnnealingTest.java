@@ -11,7 +11,6 @@ public class SimulatedAnnealingTest {
     private double initialTemperature;
     private double[][] distanceMatrix;
 
-
     @Before
     public void setUp() {
         numNodes = 5;

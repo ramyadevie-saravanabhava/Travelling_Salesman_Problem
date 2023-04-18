@@ -57,39 +57,29 @@ public class TSP {
            return distanceMatrix;
     }
 
-   
     public static void main(String[] args) {
         locations = readLocations(utils.getDataFilePath());
         double[][] distanceMatrix = calculateDistanceMatrix(locations);
+        double sum = 0.0;
 
+        long startTimeChristofides = System.currentTimeMillis();
+        Edge[] mst = GetMST(distanceMatrix);
+        List<int[]> mstList = new ArrayList<>();
+        System.out.println("Vertices: " + mst.length);
+        for (Edge e : mst) {
+        //    System.out.println(e.either() + "-" + e.other(e.either()) + " " + e.weight);
+            sum += e.weight;
+            int[] nodePair = { e.either(), e.other(e.either()) };
+                mstList.add(nodePair);
+        }
 
-Edge[] mst = GetMST(distanceMatrix);
-double sum = 0.0;
-List<int[]> mstList = new ArrayList<>();
-System.out.println("Vertices: " + mst.length);
-for (Edge e : mst) {
-//    System.out.println(e.either() + "-" + e.other(e.either()) + " " + e.weight);
-    sum += e.weight;   
-    int[] nodePair = { e.either(), e.other(e.either()) };
-        mstList.add(nodePair);
-}
-
-//System.out.println("MST " + mstList);
-System.out.println("MST Distance: " + sum);
-
-            
-
+        //System.out.println("MST " + mstList);
+        System.out.println("MST Distance: " + sum);
         List<Integer> oddVertices = findOddVertexes(mstList);
-        
-       minimumWeightMatching(mstList, distanceMatrix, oddVertices);
+        minimumWeightMatching(mstList, distanceMatrix, oddVertices);
 
-        
         List<Integer> eulerianTour = findEulerianTour(mstList, distanceMatrix);
         List<Integer> hamiltonTour = hamiltonianCircuit(eulerianTour);
-//        System.out.println("Eulerian tour: " + eulerianTour);
-
-
-        
 
         int current = eulerianTour.get(0);
         List<Integer> path = new ArrayList<>();
@@ -108,15 +98,31 @@ System.out.println("MST Distance: " + sum);
                 current = v;
             }
         }
-        
-        
+
+        long endTimeChristofides = System.currentTimeMillis();
+        long elapsedTime = endTimeChristofides - startTimeChristofides;
+        double elapsedTimeSeconds = (double) elapsedTime / 1000.0;
+        System.out.println("### CHRISTOFIDES Elapsed time: " + elapsedTimeSeconds + " seconds");
+
         length += distanceMatrix[current][eulerianTour.get(0)];
     
         path.add(eulerianTour.get(0));
 
+
         int[] pathArr = path.stream().mapToInt(Integer::intValue).toArray();
+        long startTime2OPT = System.currentTimeMillis();
         int[] twoOptArr = TwoOpt.tsp2opt(pathArr, distanceMatrix);
+        long endTime2OPT = System.currentTimeMillis();
+        elapsedTime = endTime2OPT - startTime2OPT;
+        elapsedTimeSeconds = (double) elapsedTime / 1000.0;
+        System.out.println("#### 2OPT Elapsed time: " + elapsedTimeSeconds + " seconds");
+
+        long startTime3OPT = System.currentTimeMillis();
         int[] threeOptArr = ThreeOpt.threeOpt(pathArr, distanceMatrix);
+        long endTime3OPT = System.currentTimeMillis();
+        elapsedTime = endTime3OPT - startTime3OPT;
+        elapsedTimeSeconds = (double) elapsedTime / 1000.0;
+        System.out.println("#### 3 OPT Elapsed time: " + elapsedTimeSeconds + " seconds");
         List<Integer> threeOptList = new ArrayList<>();
         List<String> threeOptNameHash = new ArrayList<>();
         List<Integer> twoOptList = new ArrayList<>();
@@ -142,36 +148,42 @@ System.out.println("MST Distance: " + sum);
         System.out.println("-------------------------------------");
         System.out.println("Three OPT Route : " + threeOptList);
         System.out.println("Three OPT DISTANCE : " + utils.findTotalDistance(threeOptList, locations));
-      System.out.println("-------------------------------------");
+        System.out.println("-------------------------------------");
         
       
-    List<Integer> acoList = new ArrayList<>();
-      
-    AntColonyOptimization aco = new AntColonyOptimization(locations.length, 1000, 1, 5, 0.5, 500, distanceMatrix,threeOptArr );
-    int[] tour = aco.solve();
-    
-    for (int i : tour) {
+        List<Integer> acoList = new ArrayList<>();
+
+        AntColonyOptimization aco = new AntColonyOptimization(locations.length, 1000, 1, 5, 0.5, 500, distanceMatrix,threeOptArr );
+        long startTimeACO = System.currentTimeMillis();
+        int[] tour = aco.solve();
+        long endTimeACO = System.currentTimeMillis();
+        elapsedTime = endTimeACO - startTimeACO;
+        elapsedTimeSeconds = (double) elapsedTime / 1000.0;
+        for (int i : tour) {
             acoList.add(i);
         }
-    System.out.println("Ant Colony Optimized Tour: " + Arrays.toString(tour));
-    System.out.println("Ant Colony Optimized Tour Length: " + utils.findTotalDistance(acoList, locations));
-    
-    
-    List<Integer> saList = new ArrayList<>();
-      
-    SimulatedAnnealing sa = new SimulatedAnnealing(locations.length, distanceMatrix, 10000, 0.05, threeOptArr);
-    int[] saTour = sa.optimizeTour();
-    
-    for (int i : saTour) {
+        System.out.println("### ACO Elapsed time: " + elapsedTimeSeconds + " seconds");
+        System.out.println("Ant Colony Optimized Tour: " + Arrays.toString(tour));
+        System.out.println("Ant Colony Optimized Tour Length: " + utils.findTotalDistance(acoList, locations));
+
+
+        List<Integer> saList = new ArrayList<>();
+        SimulatedAnnealing sa = new SimulatedAnnealing(locations.length, distanceMatrix, 10000, 0.05, threeOptArr);
+
+        long startTimeSA = System.currentTimeMillis();
+        int[] saTour = sa.optimizeTour();
+        long endTimeSA = System.currentTimeMillis();
+
+        elapsedTime = endTimeSA - startTimeSA;
+        elapsedTimeSeconds = (double) elapsedTime / 1000.0;
+        System.out.println("SA Elapsed time: " + elapsedTimeSeconds + " seconds");
+
+        for (int i : saTour) {
             saList.add(i);
         }
-    
-
-    System.out.println("Simulated Annealing Tour: " + Arrays.toString(saTour));
-    System.out.println("Simulated Annealing Tour Length: " + utils.findTotalDistance(saList, locations));
-//        
+        System.out.println("Simulated Annealing Tour: " + Arrays.toString(saTour));
+        System.out.println("Simulated Annealing Tour Length: " + utils.findTotalDistance(saList, locations));
     }
-//        
 
     public static List<int[]> prim(double[][] graph, int startNode) {
         int length = graph.length;
@@ -387,7 +399,6 @@ System.out.println("MST Distance: " + sum);
     }  
     
   public static List<Integer> findEulerianTour(List<int[]> matchedMST, double[][] graph) {
-        // find neighbours
         Map<Integer, List<Integer>> neighbours = new HashMap<>();
         for (int[] edge : matchedMST) {
             if (!neighbours.containsKey(edge[0])) {
@@ -433,8 +444,6 @@ System.out.println("MST Distance: " + sum);
         }
         return matchedMST;
     }
-    
-    
     
     public static double getMSTLength(double[][] graph, List<Integer> mst) {
         double length = 0;
@@ -512,5 +521,4 @@ System.out.println("MST Distance: " + sum);
         edges.toArray(mstArray);
         return mstArray;
     }
- 
 }

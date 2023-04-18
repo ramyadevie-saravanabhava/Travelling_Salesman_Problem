@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package or.neu.psa.aco;
+package org.neu.psa.algorithms.gentic.optimizations;
 
 /**
  *
@@ -24,6 +24,7 @@ public class AntColonyOptimization {
     private final double rho;
     private final double Q;
     private final double[][] distanceMatrix;
+
     private double[][] pheromoneMatrix;
     private final Random random;
     private final int[] cTour; 
@@ -40,6 +41,10 @@ public class AntColonyOptimization {
         this.random = new Random();
         this.cTour = cTour;
         initializePheromoneMatrix();
+    }
+
+    public double[][] getPheromoneMatrix() {
+        return pheromoneMatrix;
     }
 
     private void initializePheromoneMatrix() {

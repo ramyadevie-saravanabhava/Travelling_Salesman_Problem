@@ -8,44 +8,28 @@ package org.neu.psa.christofides;
  *
  * @author varun
  */
-import java.awt.Graphics;
 import java.io.*;
 import java.util.*;
-import or.neu.psa.aco.AntColonyOptimization;
-import org.neu.psa.SA.SimulatedAnnealing;
+import org.neu.psa.algorithms.gentic.optimizations.AntColonyOptimization;
+import org.neu.psa.algorithms.gentic.optimizations.SimulatedAnnealing;
 
 import org.neu.psa.algorithms.gentic.optimizations.ThreeOpt;
 import org.neu.psa.algorithms.gentic.optimizations.TwoOpt;
 import org.neu.psa.model.Location;
 import org.neu.psa.utils.utils;
 
-
 public class TSP {
     public static Location[] locations;
-    public static List<Edge> edge;
-    static class Point {
-        double x, y;
-        public Point(double x, double y) {
-            this.x = x;
-            this.y = y;
-        }
-        public double distanceTo(Point other) {
-            double dx = x - other.x;
-            double dy = y - other.y;
-            return Math.sqrt(dx * dx + dy * dy);
-        }
-    }
 
-    public static void main(String[] args) {
-        List<Point> points = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(utils.getDataFilePath()))) {
+    public static Location[] readLocations(String filePath){
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
             List<String> lines = new ArrayList<>();
 
             while ((line = br.readLine()) != null) {
                 lines.add(line);
             }
-            
+
             locations = new Location[lines.size()];
             for(int i = 0; i< locations.length; i++){
                 String[]parts = lines.get(i).split(",");
@@ -53,11 +37,15 @@ public class TSP {
             }
         } catch (IOException e) {
             e.printStackTrace();
-            return;
         }
 
+        return  locations;
+    }
+
+    public static double[][] calculateDistanceMatrix(Location[] locations) {
         int n = locations.length;
         double[][] distanceMatrix = new double[n][n];
+
         for (int i = 0; i < n-1; i++) {
             for (int j = i + 1; j < n; j++) {
                 double distance = locations[i].distanceTo(locations[j]);
@@ -65,9 +53,23 @@ public class TSP {
                 distanceMatrix[j][i] = distance;
             }
         }
+        
+           return distanceMatrix;
+    }
 
-       
-int startNode = 0;
+   
+    public static void main(String[] args) {
+        locations = readLocations(utils.getDataFilePath());
+        double[][] distanceMatrix = calculateDistanceMatrix(locations);
+
+//        List<int[]> mst = prim(distanceMatrix, 0);
+//        List<Integer> oddVertices = findOddVertexes(mst);
+//        
+//        int[] msttour = new int[locations.length];
+//
+//        minimumWeightMatching(mst, distanceMatrix, oddVertices);
+        
+//        int startNode = 0;
 
 
 Edge[] mst = GetMST(distanceMatrix);
@@ -92,9 +94,11 @@ System.out.println("MST Distance: " + sum);
         
         List<Integer> eulerianTour = findEulerianTour(mstList, distanceMatrix);
         System.out.println("Eulerian tour: " + eulerianTour);
+        
 
         int current = eulerianTour.get(0);
         List<Integer> path = new ArrayList<>();
+        List<String> pathHash = new ArrayList<>();
         path.add(current);
         boolean[] visited = new boolean[eulerianTour.size()];
         visited[eulerianTour.get(0)] = true;
@@ -103,6 +107,7 @@ System.out.println("MST Distance: " + sum);
         for (int v : eulerianTour) {
             if (!visited[v]) {
                 path.add(v);
+                pathHash.add(Location.findLocationById(v, locations).name);
                 visited[v] = true;
                 length += distanceMatrix[current][v];
                 current = v;
@@ -113,23 +118,30 @@ System.out.println("MST Distance: " + sum);
         path.add(eulerianTour.get(0));
 
         int[] pathArr = path.stream().mapToInt(Integer::intValue).toArray();
-
         int[] twoOptArr = TwoOpt.tsp2opt(pathArr, distanceMatrix);
         int[] threeOptArr = ThreeOpt.threeOpt(pathArr, distanceMatrix);
         List<Integer> threeOptList = new ArrayList<>();
+        List<String> threeOptNameHash = new ArrayList<>();
         List<Integer> twoOptList = new ArrayList<>();
-        for (int i : threeOptArr) {
-            threeOptList.add(i);
-        }
+        List<String> twoOptNameHash = new ArrayList<>();
+
         for (int i : twoOptArr) {
             twoOptList.add(i);
+            twoOptNameHash.add(Location.findLocationById(i, locations).name);
+        }
+
+        for (int i : threeOptArr) {
+            threeOptList.add(i);
+            threeOptNameHash.add(Location.findLocationById(i, locations).name);
         }
 
         System.out.println("Christofides Result path: " + path);
-        System.out.println(" Christofides Result length of the path: " + length);
+        System.out.println("Christofides Result Hash: " + pathHash);
+        System.out.println(" Christofides Result length of the path: " + length + " meters");
         System.out.println("-------------------------------------");
         System.out.println("Two OPT Route : " + twoOptList);
-        System.out.println("Two OPT DISTANCE : " + utils.findTotalDistance(twoOptList, locations));
+        System.out.println("Two OPT Route Hash : " + twoOptNameHash);
+        System.out.println("Two OPT DISTANCE : " + utils.findTotalDistance(twoOptList, locations) + " meters");
         System.out.println("-------------------------------------");
         System.out.println("Three OPT Route : " + threeOptList);
         System.out.println("Three OPT DISTANCE : " + utils.findTotalDistance(threeOptList, locations));
@@ -149,7 +161,6 @@ System.out.println("MST Distance: " + sum);
     }
 //        
 
-    
     public static List<int[]> prim(double[][] graph, int startNode) {
         int length = graph.length;
         int[] parent = new int[length];
@@ -185,7 +196,7 @@ System.out.println("MST Distance: " + sum);
         return mst;
     }
 
-    static int minKey(int key[], Boolean mstSet[]) {
+    public static int minKey(int key[], Boolean mstSet[]) {
         // Initialize min value
         int min = Integer.MAX_VALUE, min_index = -1;
  

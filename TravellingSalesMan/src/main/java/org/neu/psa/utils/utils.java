@@ -9,19 +9,11 @@ import java.util.List;
 public class utils {
 
     public static String getDataFilePath() {
-        return "C:\\Users\\varun\\OneDrive\\Desktop\\PSA PROJECT\\INFO-6205-Spring-2023\\TravellingSalesMan\\crimeSample.csv";
+        return "./finalCrimeData.csv";
     }
 
     public static ArrayList<Location> readLocations() {
         ArrayList<Location> allLocations = new ArrayList<>();
-//        Location loc1 = new Location(51.515192,-0.016542,  1, "Cambridgeshire Street");
-//        Location loc2 = new Location(51.543142,-0.135545,  2, "Derbyshire street");
-//        Location loc3 = new Location(51.503993, 0.045955, 3, "Liverpool");
-//        Location loc4 = new Location(51.545753, -0.477183, 4, "Bristol");
-//        allLocations.add(loc1);
-//        allLocations.add(loc2);
-//        allLocations.add(loc3);
-//        allLocations.add(loc4);
         return allLocations;
     }
 
@@ -40,6 +32,7 @@ public class utils {
 //    }
     
     public static double findDistance(Location start, Location destination) {
+
     double startLat = start.getLatitude();
     double startLong = start.getLongitude();
     double destLat = destination.getLatitude();
@@ -52,6 +45,7 @@ public class utils {
     dist = dist * 60 * 1.1515 * 1.609344; // Convert from miles to meters
     return dist;
 }
+    
 
 
     public static double findTotalDistance(List<Integer> ids, Location[] locations) {

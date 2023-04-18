@@ -16,7 +16,6 @@ import org.neu.psa.SA.SimulatedAnnealing;
 
 import org.neu.psa.algorithms.gentic.optimizations.ThreeOpt;
 import org.neu.psa.algorithms.gentic.optimizations.TwoOpt;
-import org.neu.psa.model.Edge;
 import org.neu.psa.model.Location;
 import org.neu.psa.utils.utils;
 
@@ -67,29 +66,32 @@ public class TSP {
             }
         }
 
-        List<int[]> mst = prim(distanceMatrix, 0);
-        List<Integer> oddVertices = findOddVertexes(mst);
-        
-        int[] msttour = new int[locations.length];
-        
+       
+int startNode = 0;
 
-        
 
-        minimumWeightMatching(mst, distanceMatrix, oddVertices);
+Edge[] mst = GetMST(distanceMatrix);
+double sum = 0.0;
+List<int[]> mstList = new ArrayList<>();
+for (Edge e : mst) {
+//    System.out.println(e.either() + "-" + e.other(e.either()) + " " + e.weight);
+    sum += e.weight;   
+    int[] nodePair = { e.either(), e.other(e.either()) };
+        mstList.add(nodePair);
+}
 
-                for(int i = 0; i < locations.length; i++){
+//System.out.println("MST " + mstList);
+System.out.println("MST Distance: " + sum);
+
             
-            msttour[i] = mst.get(i)[0];
-            if(i == mst.size()-1){
-                msttour[i+1] = mst.get(i)[1];
-            }
-            
-        }
-                        System.out.println("MST " + Arrays.toString(msttour));
-                        System.out.println("MST length " + msttour.length);
+
+        List<Integer> oddVertices = findOddVertexes(mstList);
         
-        List<Integer> eulerianTour = findEulerianTour(mst, distanceMatrix);
-//        System.out.println("Eulerian tour: " + eulerianTour);
+       minimumWeightMatching(mstList, distanceMatrix, oddVertices);
+
+        
+        List<Integer> eulerianTour = findEulerianTour(mstList, distanceMatrix);
+        System.out.println("Eulerian tour: " + eulerianTour);
 
         int current = eulerianTour.get(0);
         List<Integer> path = new ArrayList<>();
@@ -143,11 +145,10 @@ public class TSP {
     
     System.out.println("Simulated Annealing Tour: " + Arrays.toString(sa.optimizeTour()));
     System.out.println("Simulated Annealing Tour Length: " + sa.calculateTourLength(tour));
-        
+//        
     }
-        
+//        
 
-    
     
     public static List<int[]> prim(double[][] graph, int startNode) {
         int length = graph.length;
@@ -408,5 +409,84 @@ public class TSP {
             }
         }
         return matchedMST;
+    }
+    
+    
+    
+    public static double getMSTLength(double[][] graph, List<Integer> mst) {
+        double length = 0;
+//        for (int[] edge : mst) {
+//            length += graph[edge[0]][edge[1]];
+//        }
+        
+        for(int i = 0; i < mst.size() - 1; i++){
+            length += graph[mst.get(i)][mst.get(i+1)];
+        }
+        return length;
+    }
+    
+    
+//    public static List<int[]> getMST(double[][] graph, int start) {
+//        int n = graph.length;
+//        List<int[]> mst = new ArrayList<>();
+//        boolean[] visited = new boolean[n];
+//        double[] dist = new double[n];
+//        int[] parent = new int[n];
+//        Arrays.fill(dist, Double.POSITIVE_INFINITY);
+//        dist[start] = 0;
+//
+//        for (int i = 0; i < n - 1; i++) {
+//            int u = getMinVertex(visited, dist);
+//            visited[u] = true;
+//            for (int v = 0; v < n; v++) {
+//                if (graph[u][v] != 0 && !visited[v] && graph[u][v] < dist[v]) {
+//                    dist[v] = graph[u][v];
+//                    parent[v] = u;
+//                }
+//            }
+//        }
+//
+//        for (int i = 0; i < n; i++) {
+//            if (i != start) {
+//                mst.add(new int[] { parent[i], i });
+//            }
+//        }
+//
+//        return mst;
+//    }
+
+//    private static int getMinVertex(boolean[] visited, double[] dist) {
+//        double minDist = Double.POSITIVE_INFINITY;
+//        int minVertex = -1;
+//        for (int i = 0; i < visited.length; i++) {
+//            if (!visited[i] && dist[i] < minDist) {
+//                minDist = dist[i];
+//                minVertex = i;
+//            }
+//        }
+//        return minVertex;
+//    }
+
+  public static Edge[] GetMST(double[][] graph) {
+        int V = graph.length;
+        EdgeWeightedGraph G = new EdgeWeightedGraph(V);
+
+        for (int i = 0; i < V; i++) {
+            for (int j = i + 1; j < V; j++) {
+                if (graph[i][j] != 0) {
+                    Edge e = new Edge(i, j, graph[i][j]);
+                    G.addEdge(e);
+                }
+            }
+        }
+
+        Prims mst = new Prims(G);
+        ArrayList<Edge> edges = new ArrayList<>();
+        for (Edge e : mst.mst()) {
+            edges.add(e);
+        }
+        Edge[] mstArray = new Edge[edges.size()];
+        edges.toArray(mstArray);
+        return mstArray;
     }
 }

@@ -25,19 +25,34 @@ public class utils {
         return allLocations;
     }
 
+//    public static double findDistance(Location start, Location destination) {
+//        double startLat = start.getLatitude();
+//        double startLong = start.getLongitude();
+//        double destLat = destination.getLatitude();
+//        double destLong = destination.getLongitude();
+//
+//        double theta = startLong - destLong;
+//        double dist = Math.sin(Math.toRadians(startLat)) * Math.sin(Math.toRadians(destLat)) + Math.cos(Math.toRadians(startLat)) * Math.cos(Math.toRadians(destLat)) * Math.cos(Math.toRadians(theta));
+//        dist = Math.acos(dist);
+//        dist = Math.toDegrees(dist);
+//        dist = dist * 60 * 1.1515;
+//        return (dist);
+//    }
+    
     public static double findDistance(Location start, Location destination) {
-        double startLat = start.getLatitude();
-        double startLong = start.getLongitude();
-        double destLat = destination.getLatitude();
-        double destLong = destination.getLongitude();
+    double startLat = start.getLatitude();
+    double startLong = start.getLongitude();
+    double destLat = destination.getLatitude();
+    double destLong = destination.getLongitude();
 
-        double theta = startLong - destLong;
-        double dist = Math.sin(Math.toRadians(startLat)) * Math.sin(Math.toRadians(destLat)) + Math.cos(Math.toRadians(startLat)) * Math.cos(Math.toRadians(destLat)) * Math.cos(Math.toRadians(theta));
-        dist = Math.acos(dist);
-        dist = Math.toDegrees(dist);
-        dist = dist * 60 * 1.1515;
-        return (dist);
-    }
+    double theta = startLong - destLong;
+    double dist = Math.sin(Math.toRadians(startLat)) * Math.sin(Math.toRadians(destLat)) + Math.cos(Math.toRadians(startLat)) * Math.cos(Math.toRadians(destLat)) * Math.cos(Math.toRadians(theta));
+    dist = Math.acos(dist);
+    dist = Math.toDegrees(dist);
+    dist = dist * 60 * 1.1515 * 1.609344; // Convert from miles to meters
+    return dist;
+}
+
 
     public static double findTotalDistance(List<Integer> ids, Location[] locations) {
         double distance = 0;

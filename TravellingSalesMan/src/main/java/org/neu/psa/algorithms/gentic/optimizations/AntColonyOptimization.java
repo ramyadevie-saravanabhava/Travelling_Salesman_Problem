@@ -129,10 +129,11 @@ public class AntColonyOptimization {
 }
 
 private void updatePheromoneMatrix(int[] tour, double tourLength) {
-    double pheromoneDeposit = Q / tourLength;
-    for (int i = 0; i < numNodes; i++) {
+    double pheromoneDeposit = (Q / tourLength) ;
+    for (int i = 0; i < numNodes - 1; i++) {
         int fromNode = tour[i];
-        int toNode = tour[(i + 1) % numNodes];
+//        int toNode = tour[(i + 1) % numNodes];
+        int toNode = tour[(i + 1)];
         pheromoneMatrix[fromNode][toNode] = (1.0 - rho) * pheromoneMatrix[fromNode][toNode] + rho * pheromoneDeposit;
         pheromoneMatrix[toNode][fromNode] = (1.0 - rho) * pheromoneMatrix[toNode][fromNode] + rho * pheromoneDeposit;
     }

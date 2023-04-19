@@ -79,7 +79,7 @@ public class TSP {
         minimumWeightMatching(mstList, distanceMatrix, oddVertices);
 
         List<Integer> eulerianTour = findEulerianTour(mstList, distanceMatrix);
-        List<Integer> hamiltonTour = hamiltonianCircuit(eulerianTour);
+
 
         int current = eulerianTour.get(0);
         List<Integer> path = new ArrayList<>();
@@ -180,7 +180,7 @@ public class TSP {
         }
         System.out.println("### ACO Elapsed time: " + elapsedTimeSeconds + " seconds");
         System.out.println("Ant Colony Optimized Tour: " + Arrays.toString(tour));
-        System.out.println("Three OPT Route Hash : " + acoHash);
+        System.out.println("Ant Colony Route Hash : " + acoHash);
         System.out.println("Ant Colony Optimized Tour Length: " + utils.findTotalDistance(acoList, locations));
         System.out.println("-------------------------------------");
 
@@ -204,40 +204,6 @@ public class TSP {
         System.out.println("Simulated Annealing Tour Length: " + utils.findTotalDistance(saList, locations));
     }
 
-    public static List<int[]> prim(double[][] graph, int startNode) {
-        int length = graph.length;
-        int[] parent = new int[length];
-        int[] key = new int[length];
-        List<int[]> mst = new ArrayList<>();
-        Boolean mstSet[] = new Boolean[length];
-
-        for(int i = 0; i < length; i++){
-            key[i] = Integer.MAX_VALUE;
-            mstSet[i] = false;
-        }
-
-        key[startNode] = 0;
-        parent[startNode] = -1;
-
-        for(int count = 0; count < length-1; count++){
-            int u = minKey(key, mstSet);
-            mstSet[u] = true;
-
-            for(int n = 0; n < length; n++){
-                if(graph[u][n]!=0 && mstSet[n]== false && graph[u][n] < key[n] ){
-                    parent[n] = u;
-                    key[n] = (int) graph[u][n];
-                }
-            }
-        }
-
-        for(int f = 1; f < length; f++){
-            int[] m = { parent[f], f  };
-            mst.add(m);
-        }
-
-        return mst;
-    }
 
     public static int minKey(int key[], Boolean mstSet[]) {
         // Initialize min value
@@ -305,18 +271,7 @@ public class TSP {
         return circuit;
     }
 
-    static List<Integer> hamiltonianCircuit(List<Integer> circuit) {
-        Set<Integer> visited = new HashSet<>();
-        List<Integer> tour = new ArrayList<>();
-        for (int i = 0; i < circuit.size(); i++) {
-            int node = circuit.get(i);
-            if (!visited.contains(node)) {
-                visited.add(node);
-                tour.add(node);
-            }
-        }
-        return tour;
-    }
+
 
     static List<int[]> maxWeightMatching(double[][] graph, List<int[]> edges) {
         int n = graph.length;
@@ -430,7 +385,6 @@ public class TSP {
             neighbours.get(edge[1]).add(edge[0]);
         }
 
-        // find the Hamiltonian circuit
         int startVertex = matchedMST.get(0)[0];
         List<Integer> eulerianPath = new ArrayList<>();
         eulerianPath.add(neighbours.get(startVertex).get(0));
@@ -477,46 +431,6 @@ public class TSP {
     }
     
     
-//    public static List<int[]> getMST(double[][] graph, int start) {
-//        int n = graph.length;
-//        List<int[]> mst = new ArrayList<>();
-//        boolean[] visited = new boolean[n];
-//        double[] dist = new double[n];
-//        int[] parent = new int[n];
-//        Arrays.fill(dist, Double.POSITIVE_INFINITY);
-//        dist[start] = 0;
-//
-//        for (int i = 0; i < n - 1; i++) {
-//            int u = getMinVertex(visited, dist);
-//            visited[u] = true;
-//            for (int v = 0; v < n; v++) {
-//                if (graph[u][v] != 0 && !visited[v] && graph[u][v] < dist[v]) {
-//                    dist[v] = graph[u][v];
-//                    parent[v] = u;
-//                }
-//            }
-//        }
-//
-//        for (int i = 0; i < n; i++) {
-//            if (i != start) {
-//                mst.add(new int[] { parent[i], i });
-//            }
-//        }
-//
-//        return mst;
-//    }
-
-//    private static int getMinVertex(boolean[] visited, double[] dist) {
-//        double minDist = Double.POSITIVE_INFINITY;
-//        int minVertex = -1;
-//        for (int i = 0; i < visited.length; i++) {
-//            if (!visited[i] && dist[i] < minDist) {
-//                minDist = dist[i];
-//                minVertex = i;
-//            }
-//        }
-//        return minVertex;
-//    }
 
   public static Edge[] GetMST(double[][] graph) {
         int V = graph.length;

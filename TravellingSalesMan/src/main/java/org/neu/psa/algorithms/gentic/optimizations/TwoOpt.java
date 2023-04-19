@@ -18,7 +18,7 @@ public class TwoOpt {
 
         return res;
     }
-    private static double totalCost(int[]  cs, double[][]table) {
+    public static double totalCost(int[] cs, double[][] table) {
         int n = table.length;
         double z = table[cs[0]][cs[n-1]];
         for (int k = 0; k < n-1; k++) z += table[cs[k]][cs[k+1]];

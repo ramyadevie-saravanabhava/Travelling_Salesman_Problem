@@ -151,7 +151,7 @@ public class TSP {
         System.out.println("#### 2OPT Elapsed time: " + elapsedTimeSeconds + " seconds");
         System.out.println("Two OPT Route : " + twoOptList);
         System.out.println("Two OPT Route Hash : " + twoOptNameHash);
-        System.out.println("Two OPT DISTANCE : " + utils.findTotalDistance(twoOptList, locations) + " meters");
+        System.out.println("Two OPT Optimized Tour Length : " + utils.findTotalDistance(twoOptList, locations) + " meters");
         System.out.println("-------------------------------------");
         
         
@@ -161,7 +161,7 @@ public class TSP {
         System.out.println("#### 3 OPT Elapsed time: " + elapsedTimeSeconds + " seconds");
         System.out.println("Three OPT Route : " + threeOptList);
         System.out.println("Three OPT Route Hash : " + threeOptNameHash);
-        System.out.println("Three OPT DISTANCE : " + utils.findTotalDistance(threeOptList, locations));
+        System.out.println("Three OPT Optimized Tour Length : " + utils.findTotalDistance(threeOptList, locations)+ " meters");
         System.out.println("-------------------------------------");
         
       
@@ -182,6 +182,9 @@ public class TSP {
         System.out.println("Ant Colony Optimized Tour: " + Arrays.toString(tour));
         System.out.println("Ant Colony Route Hash : " + acoHash);
         System.out.println("Ant Colony Optimized Tour Length: " + utils.findTotalDistance(acoList, locations));
+
+
+
         System.out.println("-------------------------------------");
 
         List<Integer> saList = new ArrayList<>();
@@ -201,7 +204,7 @@ public class TSP {
         }
         System.out.println("Simulated Annealing Tour: " + Arrays.toString(saTour));
         System.out.println("Simulated Annealing Route Hash : " + saHash);
-        System.out.println("Simulated Annealing Tour Length: " + utils.findTotalDistance(saList, locations));
+        System.out.println("Simulated Annealing Optimized Tour Length: " + utils.findTotalDistance(saList, locations)+ " meters");
     }
 
 

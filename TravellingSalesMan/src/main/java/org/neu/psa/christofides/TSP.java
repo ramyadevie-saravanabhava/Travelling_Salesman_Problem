@@ -97,7 +97,8 @@ public class TSP {
                 current = v;
             }
         }
-        
+        long endTimeChristofides = System.currentTimeMillis();
+
 //        long endTimeChristofides = System.currentTimeMillis();
 //        long elapsedTime = endTimeChristofides - startTimeChristofides;
 //        double elapsedTimeSeconds = (double) elapsedTime / 1000.0;
@@ -114,10 +115,11 @@ public class TSP {
         int[] pathArr = path.stream().mapToInt(Integer::intValue).toArray();
         long startTime2OPT = System.currentTimeMillis();
         int[] twoOptArr = TwoOpt.tsp2opt(pathArr, distanceMatrix);
-        
+        long endTime2OPT = System.currentTimeMillis();
 
         long startTime3OPT = System.currentTimeMillis();
         int[] threeOptArr = ThreeOpt.threeOpt(pathArr, distanceMatrix);
+        long endTime3OPT = System.currentTimeMillis();
 
         List<Integer> threeOptList = new ArrayList<>();
         List<String> threeOptNameHash = new ArrayList<>();
@@ -134,7 +136,6 @@ public class TSP {
             threeOptNameHash.add(Location.findLocationById(i, locations).name);
         }
         
-        long endTimeChristofides = System.currentTimeMillis();
         long elapsedTime = endTimeChristofides - startTimeChristofides;
         double elapsedTimeSeconds = (double) elapsedTime / 1000.0;
         System.out.println("### CHRISTOFIDES Elapsed time: " + elapsedTimeSeconds + " seconds");
@@ -143,10 +144,8 @@ public class TSP {
         System.out.println(" Christofides Result length of the path: " + length + " meters");
         System.out.println("-------------------------------------");
         
+
         
-        
-        
-        long endTime2OPT = System.currentTimeMillis();
         elapsedTime = endTime2OPT - startTime2OPT;
         elapsedTimeSeconds = (double) elapsedTime / 1000.0;
         System.out.println("#### 2OPT Elapsed time: " + elapsedTimeSeconds + " seconds");
@@ -157,7 +156,6 @@ public class TSP {
         
         
         
-        long endTime3OPT = System.currentTimeMillis();
         elapsedTime = endTime3OPT - startTime3OPT;
         elapsedTimeSeconds = (double) elapsedTime / 1000.0;
         System.out.println("#### 3 OPT Elapsed time: " + elapsedTimeSeconds + " seconds");

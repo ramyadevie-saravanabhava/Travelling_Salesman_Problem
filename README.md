@@ -19,7 +19,7 @@ Aim: Implement the TSP (Travelling Salesman Problem) using Christofides algorith
 ---------------------------------------------------------------------
 Steps to Run The Program:
 
-In order to run the program and obtain the Follow the below Steps:
+In order to run the program and obtain the TSP, Follow the below Steps:
 
 1. Make sure that the file name is maintained as "/finalCrimeData.CSV" in the Utils.java Class
 2. Make sure all the dependencies have been installed before executing the files

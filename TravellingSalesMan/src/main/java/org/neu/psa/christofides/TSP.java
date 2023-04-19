@@ -91,38 +91,34 @@ public class TSP {
 
         for (int v : eulerianTour) {
             if (!visited[v]) {
-                path.add(v);
-                pathHash.add(Location.findLocationById(v, locations).name);
+                path.add(v);                
                 visited[v] = true;
                 length += distanceMatrix[current][v];
                 current = v;
             }
         }
-
-        long endTimeChristofides = System.currentTimeMillis();
-        long elapsedTime = endTimeChristofides - startTimeChristofides;
-        double elapsedTimeSeconds = (double) elapsedTime / 1000.0;
-        System.out.println("### CHRISTOFIDES Elapsed time: " + elapsedTimeSeconds + " seconds");
+        
+//        long endTimeChristofides = System.currentTimeMillis();
+//        long elapsedTime = endTimeChristofides - startTimeChristofides;
+//        double elapsedTimeSeconds = (double) elapsedTime / 1000.0;
+//        System.out.println("### CHRISTOFIDES Elapsed time: " + elapsedTimeSeconds + " seconds");
 
         length += distanceMatrix[current][eulerianTour.get(0)];
     
         path.add(eulerianTour.get(0));
-
+            
+        for(int i = 0 ; i < path.size(); i++ ){
+            pathHash.add(Location.findLocationById(path.get(i), locations).name);
+        }
 
         int[] pathArr = path.stream().mapToInt(Integer::intValue).toArray();
         long startTime2OPT = System.currentTimeMillis();
         int[] twoOptArr = TwoOpt.tsp2opt(pathArr, distanceMatrix);
-        long endTime2OPT = System.currentTimeMillis();
-        elapsedTime = endTime2OPT - startTime2OPT;
-        elapsedTimeSeconds = (double) elapsedTime / 1000.0;
-        System.out.println("#### 2OPT Elapsed time: " + elapsedTimeSeconds + " seconds");
+        
 
         long startTime3OPT = System.currentTimeMillis();
         int[] threeOptArr = ThreeOpt.threeOpt(pathArr, distanceMatrix);
-        long endTime3OPT = System.currentTimeMillis();
-        elapsedTime = endTime3OPT - startTime3OPT;
-        elapsedTimeSeconds = (double) elapsedTime / 1000.0;
-        System.out.println("#### 3 OPT Elapsed time: " + elapsedTimeSeconds + " seconds");
+
         List<Integer> threeOptList = new ArrayList<>();
         List<String> threeOptNameHash = new ArrayList<>();
         List<Integer> twoOptList = new ArrayList<>();
@@ -137,16 +133,36 @@ public class TSP {
             threeOptList.add(i);
             threeOptNameHash.add(Location.findLocationById(i, locations).name);
         }
-
+        
+        long endTimeChristofides = System.currentTimeMillis();
+        long elapsedTime = endTimeChristofides - startTimeChristofides;
+        double elapsedTimeSeconds = (double) elapsedTime / 1000.0;
+        System.out.println("### CHRISTOFIDES Elapsed time: " + elapsedTimeSeconds + " seconds");
         System.out.println("Christofides Result Eulerian path: " + path );
         System.out.println("Christofides Result Hash: " + pathHash);
         System.out.println(" Christofides Result length of the path: " + length + " meters");
         System.out.println("-------------------------------------");
+        
+        
+        
+        
+        long endTime2OPT = System.currentTimeMillis();
+        elapsedTime = endTime2OPT - startTime2OPT;
+        elapsedTimeSeconds = (double) elapsedTime / 1000.0;
+        System.out.println("#### 2OPT Elapsed time: " + elapsedTimeSeconds + " seconds");
         System.out.println("Two OPT Route : " + twoOptList);
         System.out.println("Two OPT Route Hash : " + twoOptNameHash);
         System.out.println("Two OPT DISTANCE : " + utils.findTotalDistance(twoOptList, locations) + " meters");
         System.out.println("-------------------------------------");
+        
+        
+        
+        long endTime3OPT = System.currentTimeMillis();
+        elapsedTime = endTime3OPT - startTime3OPT;
+        elapsedTimeSeconds = (double) elapsedTime / 1000.0;
+        System.out.println("#### 3 OPT Elapsed time: " + elapsedTimeSeconds + " seconds");
         System.out.println("Three OPT Route : " + threeOptList);
+        System.out.println("Three OPT Route Hash : " + threeOptNameHash);
         System.out.println("Three OPT DISTANCE : " + utils.findTotalDistance(threeOptList, locations));
         System.out.println("-------------------------------------");
         
@@ -159,13 +175,16 @@ public class TSP {
         long endTimeACO = System.currentTimeMillis();
         elapsedTime = endTimeACO - startTimeACO;
         elapsedTimeSeconds = (double) elapsedTime / 1000.0;
+        List<String> acoHash = new ArrayList<>();
         for (int i : tour) {
             acoList.add(i);
+            acoHash.add(Location.findLocationById(i, locations).name);
         }
         System.out.println("### ACO Elapsed time: " + elapsedTimeSeconds + " seconds");
         System.out.println("Ant Colony Optimized Tour: " + Arrays.toString(tour));
+        System.out.println("Three OPT Route Hash : " + acoHash);
         System.out.println("Ant Colony Optimized Tour Length: " + utils.findTotalDistance(acoList, locations));
-
+        System.out.println("-------------------------------------");
 
         List<Integer> saList = new ArrayList<>();
         SimulatedAnnealing sa = new SimulatedAnnealing(locations.length, distanceMatrix, 10000, 0.05, threeOptArr);
@@ -176,12 +195,14 @@ public class TSP {
 
         elapsedTime = endTimeSA - startTimeSA;
         elapsedTimeSeconds = (double) elapsedTime / 1000.0;
-        System.out.println("SA Elapsed time: " + elapsedTimeSeconds + " seconds");
-
+        System.out.println("### Simulated Annealing Elapsed time: " + elapsedTimeSeconds + " seconds");
+        List<String> saHash = new ArrayList<>();
         for (int i : saTour) {
             saList.add(i);
+            saHash.add(Location.findLocationById(i, locations).name);
         }
         System.out.println("Simulated Annealing Tour: " + Arrays.toString(saTour));
+        System.out.println("Simulated Annealing Route Hash : " + saHash);
         System.out.println("Simulated Annealing Tour Length: " + utils.findTotalDistance(saList, locations));
     }
 

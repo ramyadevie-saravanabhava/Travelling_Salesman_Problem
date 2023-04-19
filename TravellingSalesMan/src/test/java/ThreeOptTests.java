@@ -2,6 +2,7 @@ import org.junit.Test;
 import org.neu.psa.algorithms.gentic.optimizations.ThreeOpt;
 
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
 public class ThreeOptTests {
 
@@ -30,5 +31,29 @@ public class ThreeOptTests {
         int[] expectedTour3 = {0, 1, 2, 3};
         int[] resultTour3 = ThreeOpt.threeOpt(tour3, matrix3);
         assertArrayEquals(expectedTour3, resultTour3);
+    }
+
+    @Test
+    public void testReverse() {
+        int[] tour = {0, 1, 2, 3, 4};
+        int i = 1;
+        int j = 3;
+        int[] expected = {0, 3, 2, 1, 4};
+        int[] result = ThreeOpt.reverse(tour, i, j);
+        assertArrayEquals(expected, result);
+    }
+
+    @Test
+    public void testTourLength() {
+        int[] tour = {0, 1, 2, 3};
+        double[][] dist = {
+                {0.0, 2.0, 2.5, 3.0},
+                {2.0, 0.0, 1.5, 2.0},
+                {2.5, 1.5, 0.0, 1.5},
+                {3.0, 2.0, 1.5, 0.0}
+        };
+        int expected = 7;
+        int result = ThreeOpt.tourLength(tour, dist);
+        assertEquals(expected, result);
     }
 }

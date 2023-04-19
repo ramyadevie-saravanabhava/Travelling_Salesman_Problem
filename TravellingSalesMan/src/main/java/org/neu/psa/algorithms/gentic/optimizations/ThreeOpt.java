@@ -24,7 +24,7 @@ public class ThreeOpt {
     }
 
     // Reverse a section of a tour
-    private static int[] reverse(int[] tour, int i, int j) {
+    public static int[] reverse(int[] tour, int i, int j) {
         int[] newTour = new int[tour.length];
         for (int k = 0; k <= i - 1; k++) {
             newTour[k] = tour[k];
@@ -41,7 +41,7 @@ public class ThreeOpt {
     }
 
     // Calculate the length of a tour
-    private static int tourLength(int[] tour, double[][] dist) {
+    public static int tourLength(int[] tour, double[][] dist) {
         int length = 0;
         for (int i = 0; i < tour.length; i++) {
             int from = tour[i];

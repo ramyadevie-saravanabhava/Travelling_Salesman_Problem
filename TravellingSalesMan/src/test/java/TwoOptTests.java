@@ -1,7 +1,11 @@
+import org.junit.Assert;
 import org.junit.Test;
 import org.neu.psa.algorithms.gentic.optimizations.TwoOpt;
+import org.neu.psa.christofides.TSP;
+import org.neu.psa.model.Location;
 
 import static org.junit.Assert.*;
+import static org.neu.psa.algorithms.gentic.optimizations.TwoOpt.totalCost;
 
 public class TwoOptTests {
 
@@ -30,5 +34,19 @@ public class TwoOptTests {
         int[] expectedTour2 = {0, 1, 2, 3, 4, 5, 6, 7, 8};
         int[] resultTour2 = TwoOpt.tsp2opt(tour2, matrix2);
         assertArrayEquals(expectedTour2, resultTour2);
+    }
+
+    @Test
+    public void testTotalCost() {
+        int[] cs = {0, 1, 2, 3};
+        double[][] table = {
+                {0.0, 2.0, 2.5, 3.0},
+                {2.0, 0.0, 1.5, 2.0},
+                {2.5, 1.5, 0.0, 1.5},
+                {3.0, 2.0, 1.5, 0.0}
+        };
+        double expected = 8.0;
+        double result = totalCost(cs, table);
+        assertEquals(expected, result, 0.0001);
     }
 }
